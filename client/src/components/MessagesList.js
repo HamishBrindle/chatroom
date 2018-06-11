@@ -14,9 +14,6 @@ const MessagesList = ({ messages }) => (
       ))}
       </ul>
     </section>
-    <div style={{ float:"left", clear: "both" }}
-      ref={(el) => { this.messagesEnd = el; }}>
-    </div>
   </div>
 )
 
@@ -30,5 +27,6 @@ MessagesList.propTypes = {
     }).isRequired
   ).isRequired
 }
+
 
 export default MessagesList

@@ -14,7 +14,10 @@ const AddMessage = (props) => {
       }} type="text" ref={(node) => {
         input = node
       }} className="msger-input"
-      /><button type="submit" className="msger-send-btn">Send</button>
+      /><button onClick={(e) => {
+        props.dispatch(input.value, 'Me')
+        input.value = ''
+      }} className="msger-send-btn">Send</button>
     </section>
 
   )
