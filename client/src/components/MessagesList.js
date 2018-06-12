@@ -13,15 +13,19 @@ class MessagesList extends React.Component {
       <div>
         <section id="messages-list">
           <ul>
-          {this.props.messages.map(message => (
-            <Message
-            key={message.id}
-            {...message}
-            />
-          ))}
-          <div style={{ float:"left", clear: "both" }}
-             ref={(el) => { this.messagesEnd = el; }}>
-          </div>
+
+            {this.props.messages.map(message => (
+              <Message
+              key={message.id}
+              {...message}
+              />
+            ))}
+
+            {/* This is just a reference for scrolling to bottom. */}
+            <div style={{ float:"left", clear: "both" }}
+              ref={(el) => { this.messagesEnd = el; }}>
+            </div>
+
           </ul>
         </section>
       </div>
@@ -42,20 +46,6 @@ class MessagesList extends React.Component {
 
 }
 
-// const MessagesList = ({ messages }) =>
-//   <div>
-//     <section id="messages-list">
-//       <ul onLoad={(e) => scrollBottom(e)}>
-//       {messages.map(message => (
-//         <Message
-//         key={message.id}
-//         {...message}
-//         />
-//       ))}
-//       </ul>
-//     </section>
-//   </div>;
-
 MessagesList.propTypes = {
   messages: PropTypes.arrayOf(
     PropTypes.shape({
@@ -66,10 +56,5 @@ MessagesList.propTypes = {
     }).isRequired
   ).isRequired
 }
-
-const scrollBottom = (event) => {
-  console.log(event);
-}
-
 
 export default MessagesList
