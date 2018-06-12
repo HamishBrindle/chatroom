@@ -15,7 +15,7 @@ class App extends Component {
         <section className="msger">
            <header className="msger-header">
               <div className="msger-header-title">
-                  <i className="fas fa-comment-alt"></i> Room: all
+                   <i className="fas fa-comment-alt"></i> Room: all {/* TODO: Introduce room selection */}
               </div>
               <div className="msger-header-options">
                   <span>
@@ -45,6 +45,7 @@ class App extends Component {
       </div>
     );
   }
+  
 
 }
 
