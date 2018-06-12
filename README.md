@@ -2,6 +2,8 @@
 
 A text-chat application using React, AWS, and Node (Websocket).
 
+![Chatroom Image](https://github.com/HamishBrindle/chatroom/blob/master/client/public/img/chatroom-pic.PNG)
+
 ### Why
 
 I want to learn React and AWS. I stumbled onto 'Serverless' and decided to give it a go, then decided I've been meaning to learn React too so.
