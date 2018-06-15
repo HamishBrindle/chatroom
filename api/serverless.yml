@@ -18,7 +18,9 @@ service: serverless-chatroom
 # frameworkVersion: "=X.X.X"
 
 custom:
-  tableName: serverless-chatroom-table-${self:provider.stage}
+  messagesTable: messages-table-${self:provider.stage}
+  roomsTable: rooms-table-${self:provider.stage}
+  usersTable: users-table-${self:provider.stage}
 
 provider:
   name: aws
@@ -26,7 +28,9 @@ provider:
   stage: dev
   region: us-east-1
   environment:
-    MESSAGES_TABLE: ${self:custom.tableName}
+    MESSAGES_TABLE: ${self:custom.messagesTable}
+    ROOMS_TABLE: ${self:custom.roomsTable}
+    USERS_TABLE: ${self:custom.usersTable}
     AWS_DEPLOY_REGION: ${self:provider.region}
   iamRoleStatements:
     - Effect: Allow
@@ -44,7 +48,17 @@ provider:
           ]]}
         - { "Fn::Join": [ "/", [
             { "Fn::GetAtt": ["ChatMessagesDynamoDBTable", "Arn" ] }, "index", "userIndex" 
-          ]]}     
+          ]]}
+
+        - { "Fn::GetAtt": ["ChatRoomsDynamoDBTable", "Arn" ] }
+        - { "Fn::Join": [ "/", [ 
+           { "Fn::GetAtt": ["ChatRoomsDynamoDBTable", "Arn" ] }, "index", "roomIndex" 
+          ]]}
+
+        - { "Fn::GetAtt": ["UsersDynamoDBTable", "Arn" ] }
+        - { "Fn::Join": [ "/", [ 
+           { "Fn::GetAtt": ["UsersDynamoDBTable", "Arn" ] }, "index", "userNameIndex" 
+          ]]}
 
 # you can overwrite defaults here
 #  stage: dev
@@ -80,33 +94,50 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
+  # Messages
   createChatMessage:
-    handler: handler.createChatMessage
+    handler: messages-handler.createChatMessage
     events:
       - http: 
           method: POST
           path: /messages
           private: false
   getMessage:
-    handler: handler.getMessage 
+    handler: messages-handler.getMessage 
     events:
       - http:
           method: GET
           path: /messages
           private: false
   getRoomMessages:
-    handler: handler.getRoomMessages
+    handler: messages-handler.getRoomMessages
     events:
       - http:
           method: GET
           path: /messages/room/{room}
           private: false
   getUserMessages:
-    handler: handler.getUserMessages
+    handler: messages-handler.getUserMessages
     events:
       - http:
           method: GET
           path: /messages/user/{userId}
+          private: false
+
+  # Rooms
+  createChatRoom:
+    handler: rooms-handler.createChatRoom
+    events:
+      - http:
+          method: POST
+          path: /rooms
+          private: false
+  getChatRooms:
+    handler: rooms-handler.getChatRooms
+    events:
+      - http:
+          method: GET
+          path: /rooms
           private: false
 
 #    The following are a few example events you can configure
@@ -156,13 +187,15 @@ functions:
 
 resources:
   Resources:
+
+    # All the messages we got
     ChatMessagesDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties: # Describes the table. DynamoDB not required to declare columns.
         AttributeDefinitions: # [] of Attributes that describe key schema for table|indexes.
           - AttributeName: messageId # Name for attribute
             AttributeType: S # Datatype of attribute (S = string, N = number, B = binary)
-          - AttributeName: room
+          - AttributeName: roomId
             AttributeType: S
           - AttributeName: userId
             AttributeType: S
@@ -172,7 +205,7 @@ resources:
         GlobalSecondaryIndexes: # Maximum 5 GSI's
           - IndexName: roomIndex # Name of index - must be unique
             KeySchema: # Defines which AttributeDefinition we're using here
-              - AttributeName: room
+              - AttributeName: roomId
                 KeyType: HASH
             Projection: # Specifies attributes that are copied (projected) from the table into the index
               ProjectionType: ALL
@@ -191,4 +224,58 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:custom.tableName}
+        TableName: ${self:custom.messagesTable}
+
+    # All the rooms we got   
+    ChatRoomsDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+          AttributeDefinitions:
+            - AttributeName: roomId
+              AttributeType: S
+            - AttributeName: room
+              AttributeType: S
+          KeySchema:
+            - AttributeName: roomId
+              KeyType: HASH
+          GlobalSecondaryIndexes:
+            - IndexName: roomIndex
+              KeySchema:
+                - AttributeName: room
+                  KeyType: HASH
+              Projection:
+                ProjectionType: ALL
+              ProvisionedThroughput:
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+          TableName: ${self:custom.roomsTable}
+
+        # All the rooms we got   
+    UsersDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+          AttributeDefinitions:
+            - AttributeName: userId
+              AttributeType: S
+            - AttributeName: userName
+              AttributeType: S
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+          GlobalSecondaryIndexes:
+            - IndexName: userNameIndex
+              KeySchema:
+                - AttributeName: userName
+                  KeyType: HASH
+              Projection:
+                ProjectionType: ALL
+              ProvisionedThroughput:
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+          TableName: ${self:custom.usersTable}

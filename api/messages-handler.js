@@ -33,6 +33,7 @@ module.exports.createChatMessage = async (event, context) => {
       error: `Could not parse requested JSON: ${err.stack}`
     };
   }
+  
   const {
     messageId,
     datePosted,
@@ -147,12 +148,12 @@ module.exports.getRoomMessages = async (event, context) => {
   }
 
   const params = {
-    TableName: MESSAGES_TABLE,
-    IndexName: "roomIndex",
-    KeyConditionExpression: "room = :room",
     ExpressionAttributeValues: {
       ":room": event.pathParameters.room
-    }
+    },
+    KeyConditionExpression: "room = :room",
+    IndexName: "roomIndex",
+    TableName: MESSAGES_TABLE,
   };
 
   try {
