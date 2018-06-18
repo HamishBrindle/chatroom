@@ -70,7 +70,7 @@ module.exports.createChatRoom = async (event, context) => {
  * Create a chat room in our database.
  * 
  * Endpoint: /rooms
- * Method: POST
+ * Method: GET
  * @param {object} event 
  * @param {object} context 
  */
@@ -81,7 +81,7 @@ module.exports.getChatRooms = async (event, context) => {
     };
 
     try {
-        const data = await dynamoDb.query(params).promise();
+        const data = await dynamoDb.scan(params).promise();
         console.log(`getChatRooms data=${JSON.stringify(data.Items)}`);
         return {
             statusCode: 200,
