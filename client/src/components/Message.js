@@ -25,7 +25,8 @@ const Message = ({ message, author, datePosted }) => (
 
 Message.propTypes = {
   message: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired
+  author: PropTypes.string.isRequired,
+  datePosted: PropTypes.number.isRequired
 }
 
 export default Message

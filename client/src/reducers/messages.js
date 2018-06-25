@@ -1,13 +1,15 @@
+import * as types from '../constants/ActionTypes'
+
 const messages = (state = [], action) => {
     switch (action.type) {
-        case 'ADD_MESSAGE':
-        case 'MESSAGE_RECEIVED':
+        case types.ADD_MESSAGE:
+        case types.MESSAGE_RECEIVED:
             return state.concat([{
                 message: action.message,
                 author: action.author,
                 id: action.id
             }])
-        case 'ROOM_MESSAGES':
+        case types.ROOM_MESSAGES:
             return state.concat(parseRoomMessages(action));
         default:
             return state

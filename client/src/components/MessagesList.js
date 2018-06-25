@@ -4,6 +4,7 @@ import Message from "./Message"
 
 class MessagesList extends React.Component {
 
+
   render() {
     return (
       <div>
@@ -32,12 +33,12 @@ class MessagesList extends React.Component {
     this.messagesEnd.scrollIntoView({ behavior: "smooth" });
   }
   
-  componentDidMount() {
+  componentDidMount() { 
     this.scrollToBottom();
   }
   
-  componentDidUpdate() {
-    this.scrollToBottom();
+  componentDidUpdate() {    
+    this.scrollToBottom();    
   }
 
 }

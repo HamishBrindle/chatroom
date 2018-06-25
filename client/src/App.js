@@ -1,52 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import { Sidebar } from "./containers/Sidebar"
-import { MessagesList } from "./containers/MessagesList"
-import { AddMessage } from "./containers/AddMessage"
+import Main from './components/Main';
 
 class App extends Component {
 
   render() {
     return (
-      
-      <div id="container">
-        <h1 className="app-header">React + AWS Chat</h1>
-        <section className="msger">
-           <header className="msger-header">
-              <div className="msger-header-title">
-                   <i className="fas fa-comment-alt"></i> Room: all {/* TODO: Introduce room selection */}
-              </div>
-              <div className="msger-header-options">
-                  <span>
-                      <i className="fas fa-cog"></i>
-                  </span>
-              </div>
-           </header>
-           <main className="msger-chat">
-             <MessagesList />
-           </main>
-           <AddMessage />
-           <div className="user-list">
-            <header className="msger-header">
-                <div className="msger-header-title">
-                    <i className="fas fa-comment-alt"></i>Online Users
-                </div>
-                <div className="msger-header-options">
-                    <span>
-                        <i className="fas fa-cog"></i>
-                    </span>
-                </div>
-            </header>
-            <Sidebar />
-           </div>
-        </section>
-
-      </div>
+        <div>
+          <Main />
+        </div>
     );
   }
-  
 
 }
 
-export default App;
+export default App

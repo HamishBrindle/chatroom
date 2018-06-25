@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import createSagaMiddleware from 'redux-saga'
-
 import './index.css'
 import App from './App'
 import registerServiceWorker from './registerServiceWorker'
@@ -16,16 +16,21 @@ const sagaMiddleware = createSagaMiddleware()
 
 const store = createStore(
   reducers,
-  applyMiddleware(sagaMiddleware)
-)
+  compose(
+    applyMiddleware(sagaMiddleware), 
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  )
+);
 
-const socket = setupSocket(store.dispatch, username)
+const socket = setupSocket(store.dispatch, username, 'all')
 
-sagaMiddleware.run(handleNewMessage, { socket, username })
+sagaMiddleware.run(handleNewMessage, { socket, username }) 
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </Provider>,
   document.getElementById('root')
 )
