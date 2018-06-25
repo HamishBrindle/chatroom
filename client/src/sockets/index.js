@@ -21,19 +21,19 @@ const setupSocket = (dispatch, username, room) => {
     const data = JSON.parse(event.data)
     switch (data.type) {
       case types.ADD_MESSAGE:
-        console.log("GETTING MESSAGE");
+        console.log("-------------GETTING MESSAGE");
         dispatch(messageReceived(data.message, data.room, data.author))
         break
       case types.ADD_USER:
-        console.log("ADDING USER");
+        console.log("-------------ADDING USER");
         dispatch(addUser(data.name, room))
         break
       case types.USERS_LIST:
-        console.log("GETTING USER LIST");
+        console.log("-------------GETTING USER LIST");
         dispatch(populateUsersList(data.users))
         break
       case types.ROOM_MESSAGES:
-        console.log("GETTING ROOM MESSAGES");
+        console.log("-------------GETTING ROOM MESSAGES");
         dispatch(refreshRoom(JSON.parse(data.data)));
         break
       default:

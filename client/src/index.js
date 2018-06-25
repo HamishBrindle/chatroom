@@ -22,9 +22,10 @@ const store = createStore(
   )
 );
 
-const socket = setupSocket(store.dispatch, username, 'all')
-
-sagaMiddleware.run(handleNewMessage, { socket, username }) 
+sagaMiddleware.run(
+  handleNewMessage,
+  { store }
+);
 
 ReactDOM.render(
   <Provider store={store}>

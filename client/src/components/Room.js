@@ -3,18 +3,18 @@ import { Sidebar } from "../containers/Sidebar"
 import { MessagesList } from "../containers/MessagesList"
 import { AddMessage } from "../containers/AddMessage"
 
-import setupSocket from '../sockets'
+// import setupSocket from '../sockets'
 import username from '../utils/name'
 
 class Room extends React.Component {
 
-    // constructor(props) {
-    //     super(props);
-    // }
+    constructor(props) {
+        super(props);
+    }
 
-    // componentWillMount() {
-    //     this.socket = setupSocket(this.props.dispatch, username, this.props.room)
-    // }
+    componentWillMount() {
+        this.props.connectSocket(username, this.props.room); // This is where I call to action my socket connection
+    }
 
     render() {
         return (
