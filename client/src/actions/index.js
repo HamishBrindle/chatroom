@@ -35,3 +35,8 @@ export const refreshRoom = messages => ({
   messages
 })
 
+export const joinRoom = room => ({
+  type: types.JOIN_ROOM,
+  room
+})
+

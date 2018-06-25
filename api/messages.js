@@ -12,7 +12,6 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient({
   region: AWS_DEPLOY_REGION
 });
 
-
 /**
  * Create a chat message in our database.
  * 
@@ -33,11 +32,13 @@ module.exports.createChatMessage = async (event, context) => {
       error: `Could not parse requested JSON: ${err.stack}`
     };
   }
+
+  console.error(_parsed)
   
   const {
     messageId,
     datePosted,
-    room,
+    roomId,
     userId,
     message
   } = _parsed;
@@ -47,7 +48,7 @@ module.exports.createChatMessage = async (event, context) => {
     Item: {
       messageId,
       datePosted,
-      room,
+      roomId,
       userId,
       message
     },
@@ -140,7 +141,7 @@ module.exports.getRoomMessages = async (event, context) => {
       error: `No pathParameters`
     };
   }
-  if (!(event.pathParameters.room)) {
+  if (!(event.pathParameters.roomId)) {
     return {
       statusCode: 404,
       error: `No room in Query String: ${JSON.stringify(event.pathParameters)}`
@@ -148,26 +149,26 @@ module.exports.getRoomMessages = async (event, context) => {
   }
 
   const params = {
-    ExpressionAttributeValues: {
-      ":room": event.pathParameters.room
-    },
-    KeyConditionExpression: "room = :room",
-    IndexName: "roomIndex",
     TableName: MESSAGES_TABLE,
+    IndexName: "roomIndex",
+    KeyConditionExpression: "roomId = :roomId",
+    ExpressionAttributeValues: {
+      ":roomId": event.pathParameters.roomId
+    },
   };
 
   try {
     const data = await dynamoDb.query(params).promise();
-    console.log(`getRoomMessages data=${JSON.stringify(data.Items)}`);
+    console.error(`getRoomMessages data=${JSON.stringify(data.Items)}`);
     return {
       statusCode: 200,
       body: JSON.stringify(data.Items)
     };
   } catch (error) {
-    console.log(`getRoomMessages ERROR=${error.stack}`);
+    console.error(`getRoomMessages ERROR=${error.stack}`);
     return {
       statusCode: 400,
-      error: `Could not query messages with room ${event.pathParameters.room}: ${error.stack}`
+      error: `Could not query messages with room ${event.pathParameters.roomId}: ${error.stack}`
     };
   }
 };

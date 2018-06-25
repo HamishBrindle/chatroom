@@ -5,67 +5,35 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var request = require('request');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
 var app = express();
 
 const rp = require('request-promise');
 const shortid = require('shortid');
 const WebSocket = require('ws')
-const wss = new WebSocket.Server({
-  port: 8989
-})
+const wss = new WebSocket.Server({ port: 8989 });
+
 const RoomCollection = require('./models/RoomCollection');
 
-const ENDPOINT = 'https://fhstdaxozf.execute-api.us-east-1.amazonaws.com/dev';
-const ROOM = 'all'; // TODO: Need dynamic room setting
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+const ENDPOINT = 'https://y6bzexjalj.execute-api.us-east-1.amazonaws.com/dev';
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
   extended: false
 }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', indexRouter);
-// app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+app.use(cookieParser()); 
 
 /*
 Web-socket --------------------------------------------------
 */
 
 const roomCollection = new RoomCollection();
-// TODO: use RoomCollection's fetchRooms to get all the open rooms available.
+
+// TODO: use RoomCollection's fetchRooms to get 
+// all the open rooms available.
 roomCollection.fetchRooms(ENDPOINT);
 
-roomCollection.addRoom(ROOM); // TODO: Adding a default 'all' room for now
-
-console.log(roomCollection);
-
-const users = [];
-
+// this sends shit to everyone, but 'ws' only sends to client
 const broadcast = (data, ws) => {
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN && client !== ws) {
@@ -74,38 +42,46 @@ const broadcast = (data, ws) => {
   })
 }
 
-wss.on('connection', (ws) => { // When a socket has been opened... TODO: store users somewhere else?
+wss.on('connection', (ws) => {
 
-  let index;
-  let user;
+  let _index;
+  let _user;
+  let _room; 
 
   ws.on('message', (message) => {
 
     const data = JSON.parse(message);
-    const room = roomCollection.getRoom(ROOM); // TODO: Get this from client? Is it included in this message?
+
+    // Also checks if room exists, if it does returns that room object.
+    
+    _room = roomCollection.addRoom(data.room);
 
     switch (data.type) {
       case 'ADD_USER':
         {
-          user = data.name;
-          index = room.users.indexOf(user);
+          _user = data.name;
 
-          room.users.push({
-            name: data.name,
-            id: index + 1
+          _room.users.push({
+            name: _user,
+            id: shortid.generate()
           });
+
+          _index = _room.users.indexOf(_user);          
 
           ws.send(JSON.stringify({
             type: 'USERS_LIST',
-            users: room.users
+            users: _room.users
           }));
 
           broadcast({
             type: 'USERS_LIST',
-            users: room.users
+            users: _room.users
           }, ws);
+
+          console.log(_room)
           
-          rp(`${ENDPOINT}/messages/room/${ROOM}`)
+          // For the client that just connected (this client), send the chat history from the room.
+          rp(`${ENDPOINT}/messages/room/${_room.id}`)
           .then((data) => {
             ws.send(JSON.stringify({
               type: 'ROOM_MESSAGES',
@@ -113,12 +89,12 @@ wss.on('connection', (ws) => { // When a socket has been opened... TODO: store u
             }))
           })
           .catch((err) => {
-            // Crawling failed...
+            console.log(`Unable to retrieve messages from \'${_room.id}\': ${err}`);
           });
 
-          roomCollection.updateRoom(room);
+          roomCollection.updateRoom(_room);
 
-          break;
+          break; 
 
         }
 
@@ -127,13 +103,14 @@ wss.on('connection', (ws) => { // When a socket has been opened... TODO: store u
         broadcast({
           type: 'ADD_MESSAGE',
           message: data.message,
+          room: data.room,
           author: data.author
         }, ws);
 
         var formData = {
           messageId: shortid.generate(),
           datePosted: Date.now(),
-          room: ROOM,
+          roomId: data.room,
           userId: data.author,
           message: data.message
         };
@@ -154,7 +131,6 @@ wss.on('connection', (ws) => { // When a socket has been opened... TODO: store u
         } catch (err) {
           console.error('Couldn\'t upload m8: ' + err);
         }
-
         break;
 
       default:
@@ -164,20 +140,22 @@ wss.on('connection', (ws) => { // When a socket has been opened... TODO: store u
 
   ws.on('close', (event) => {
 
-    console.log(`Removing: ${user}\n`);
+    console.log(`Removing: ${_user}\n`);
 
-    const room = roomCollection.getRoom(ROOM); // TODO: Get this from client? Is it included in this message?
+    const room = roomCollection.getRoom(_room.id); // TODO: Get this from client? Is it included in this message?
 
-    room.users.splice(index, 1);
+    if (room) {
 
-    broadcast({
-      type: 'USERS_LIST',
-      users: room.users
-    }, ws);
+      room.users.splice(_index, 1);
 
-    roomCollection.updateRoom(room);
-    console.log(roomCollection);
-    console.log(roomCollection.getRoom('all').getUsers());    
+      broadcast({
+        type: 'USERS_LIST',
+        users: room.users
+      }, ws);
+  
+      roomCollection.updateRoom(room);
+
+    }
 
   });
 

@@ -3,8 +3,7 @@ const shortid = require('shortid');
 class Room {
 
     constructor(name) {
-        this.name = name;
-        this.id = shortid.generate();
+        this.id = name
         this.users = [];
     }
 

@@ -3,7 +3,18 @@ import { Sidebar } from "../containers/Sidebar"
 import { MessagesList } from "../containers/MessagesList"
 import { AddMessage } from "../containers/AddMessage"
 
+import setupSocket from '../sockets'
+import username from '../utils/name'
+
 class Room extends React.Component {
+
+    // constructor(props) {
+    //     super(props);
+    // }
+
+    // componentWillMount() {
+    //     this.socket = setupSocket(this.props.dispatch, username, this.props.room)
+    // }
 
     render() {
         return (
@@ -22,7 +33,8 @@ class Room extends React.Component {
                 <main className="msger-chat">
                     <MessagesList />
                 </main>
-                <AddMessage room={this.props.room}/>
+                {/* <AddMessage room={this.props.room} socket={this.socket}/> */}
+                <AddMessage room={this.props.room} />
                 <div className="user-list">
                     <header className="msger-header">
                         <div className="msger-header-title">

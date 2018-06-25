@@ -46,10 +46,9 @@ class MessagesList extends React.Component {
 MessagesList.propTypes = {
   messages: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
       message: PropTypes.string.isRequired,
       author: PropTypes.string.isRequired,
-      datePosted: PropTypes.number.isRequired
+      datePosted: PropTypes.number
     }).isRequired
   ).isRequired
 }

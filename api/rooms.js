@@ -65,7 +65,6 @@ module.exports.createChatRoom = async (event, context) => {
 
 }
 
-
 /**
  * Create a chat room in our database.
  * 
