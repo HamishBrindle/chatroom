@@ -1,4 +1,10 @@
 const Room = require('./Room');
+const request = require('request');
+const rp = require('request-promise');
+
+const shortid = require('shortid'); // TODO: Why is this here? lets move to
+
+const ENDPOINT = 'https://y6bzexjalj.execute-api.us-east-1.amazonaws.com/dev';
 
 /**
  * Building a server-side Map wrapper for keeping track of active users 
@@ -21,7 +27,8 @@ class RoomCollection {
 
         if (room === undefined) {
             room = new Room(id);
-            this.rooms.set(id, room);
+            this.rooms.set(room.id, room);
+            this.addRoomToDB(room);
             return room;
         }
         
@@ -53,8 +60,7 @@ class RoomCollection {
 
         if (this.rooms.get(room.id) === undefined) { 
 
-            // TODO: If we can't find, handle error here...
-            console.log(`Unable to find ${room.id} in RoomCollection.`);
+            console.log(`Unable to find ${room.name} in RoomCollection.`);
 
             return false;
         }
@@ -66,8 +72,57 @@ class RoomCollection {
      * Fetch all the rooms from the Database and populate our RoomCollection.
      * @param {string} url 
      */
-    fetchRooms(url) {
-        console.log(`Fetching rooms from ${url}`)
+    fetchRooms() { 
+
+        return new Promise((resolve, reject) => {
+            console.log(`Fetching rooms from ${ENDPOINT}/rooms/`);
+            rp(`${ENDPOINT}/rooms/`)
+            .then((data) => {
+                const rooms = JSON.parse(data);
+                rooms.forEach(r => {
+                    console.log(r);
+                    this.addRoom(r.roomId)
+                });
+                resolve(data);
+            })
+            .catch((err) => {
+                console.log(`Unable to retrieve rooms: ${err}`);
+                reject(err);
+            });
+        });
+    }
+
+    /**
+     * Add a room to the database.
+     * 
+     * @param {Object} room the room to be added
+     */
+    addRoomToDB(r) {
+
+        console.log("addRoomToDB");
+        console.log(r);
+
+        var formData = {
+            roomId: r.id,
+          };
+
+        try {
+            request.post({
+              headers: {
+                'content-type': 'application/json'
+              },
+              url: `${ENDPOINT}/rooms`,
+              body: JSON.stringify(formData)
+            }, (err, httpResponse, body) => {
+              if (err) {
+                return console.error('upload failed:', err);
+              }
+              console.log('Server responded with:', body);
+            });
+          } catch (err) {
+            console.error('Couldn\'t upload room: ' + err);
+          }
+
     }
 
 }

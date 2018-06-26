@@ -3,8 +3,8 @@ const UserCollection = require('./UserCollection');
 
 class Room {
 
-    constructor(name) {
-        this.id = name
+    constructor(id) {
+        this.id = id;
         this.users = new UserCollection();
     }
 

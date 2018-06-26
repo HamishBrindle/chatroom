@@ -10,7 +10,9 @@ var app = express();
 const rp = require('request-promise');
 const shortid = require('shortid');
 const WebSocket = require('ws')
-const wss = new WebSocket.Server({ port: 8989 });
+const wss = new WebSocket.Server({
+  port: 8989
+});
 
 const RoomCollection = require('./models/RoomCollection');
 const User = require('./models/User');
@@ -22,17 +24,13 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: false
 }));
-app.use(cookieParser()); 
+app.use(cookieParser());
 
 /*
 Web-socket --------------------------------------------------
 */
 
 const roomCollection = new RoomCollection();
-
-// TODO: use RoomCollection's fetchRooms to get 
-// all the open rooms available.
-roomCollection.fetchRooms(ENDPOINT);
 
 // this sends shit to everyone, but 'ws' only sends to client
 const broadcast = (room, data, ws) => {
@@ -45,111 +43,124 @@ const broadcast = (room, data, ws) => {
   })
 }
 
-wss.on('connection', (ws) => {
+const setupSocketServer = () => {
 
-  let _user;
-  let _room;
+  console.log('setupSocketServer');
 
-  ws.on('message', (message) => {
+  wss.on('connection', (ws) => {
 
-    const data = JSON.parse(message);
-    
-    _room = roomCollection.addRoom(data.room);
- 
-    switch (data.type) {
-      case 'ADD_USER':
-        {
-          _user = new User(data.name, ws);
+    let _user;
+    let _room;
 
-          _room.users.addUser(_user);
+    ws.on('message', (message) => {
 
-          console.log('----------------------------USER LIST');
-          console.log(_room.getUserList());
+      const data = JSON.parse(message);
 
-          ws.send(JSON.stringify({ // THIS GOES TO OUR CLIENT
-            type: 'USERS_LIST',
-            users: _room.getUserList() // TODO: Change this on client side, it's now an array of objects, not strings
-          }));
+      _room = roomCollection.addRoom(data.room);
 
-          broadcast(_room, { // THIS GOES TO EVERYONE ELSE
-            type: 'USERS_LIST',
-            users: _room.getUserList() // TODO: Change this on client side, it's now an array of objects, not strings
+      switch (data.type) {
+        case 'ADD_USER':
+          {
+            _user = new User(data.name, ws);
+
+            _room.users.addUser(_user);
+
+            ws.send(JSON.stringify({ // THIS GOES TO OUR CLIENT
+              type: 'USERS_LIST',
+              users: _room.getUserList() // TODO: Change this on client side, it's now an array of objects, not strings
+            }));
+
+            broadcast(_room, { // THIS GOES TO EVERYONE ELSE
+              type: 'USERS_LIST',
+              users: _room.getUserList() // TODO: Change this on client side, it's now an array of objects, not strings
+            }, ws);
+
+            // For the client that just connected (this client), send the chat history from the room.
+            rp(`${ENDPOINT}/messages/room/${_room.id}`)
+            .then((data) => {
+              ws.send(JSON.stringify({
+                type: 'ROOM_MESSAGES',
+                data
+              }))
+            })
+            .catch((err) => {
+              console.log(`Unable to retrieve messages from \'${_room.id}\': ${err}`);
+            });
+
+            roomCollection.updateRoom(_room);
+
+            break;
+
+          }
+
+        case 'ADD_MESSAGE':
+
+          broadcast(_room, {
+            type: 'ADD_MESSAGE',
+            message: data.message,
+            room: data.room,
+            author: data.author
           }, ws);
-          
-          // For the client that just connected (this client), send the chat history from the room.
-          rp(`${ENDPOINT}/messages/room/${_room.id}`)
-          .then((data) => {
-            ws.send(JSON.stringify({
-              type: 'ROOM_MESSAGES',
-              data
-            }))
-          })
-          .catch((err) => {
-            console.log(`Unable to retrieve messages from \'${_room.id}\': ${err}`);
-          });
 
-          roomCollection.updateRoom(_room);
+          var formData = {
+            messageId: shortid.generate(),
+            datePosted: Date.now(),
+            roomId: data.room,
+            userId: data.author,
+            message: data.message
+          };
 
-          break; 
+          try {
+            request.post({
+              headers: {
+                'content-type': 'application/json'
+              },
+              url: `${ENDPOINT}/messages`,
+              body: JSON.stringify(formData)
+            }, (err, httpResponse, body) => {
+              if (err) {
+                return console.error('upload failed:', err);
+              }
+              console.log('Server responded with:', body);
+            });
+          } catch (err) {
+            console.error('Couldn\'t upload message: ' + err);
+          }
 
-        }
+          break;
 
-      case 'ADD_MESSAGE':
+        default:
+          break;
+      }
+    });
 
-        broadcast(_room, {
-          type: 'ADD_MESSAGE',
-          message: data.message,
-          room: data.room,
-          author: data.author
+    ws.on('close', (event) => {
+
+      console.log(`Removing: ${_user.name}\n`);
+
+      const room = roomCollection.getRoom(_room.id); // TODO: Get this from client? Is it included in this message?
+
+      if (room) {
+        // if (room.users.removeUser(_user.id)) console.log("User removed")
+        broadcast(room, {
+          type: 'USERS_LIST',
+          users: room.getUserList()
         }, ws);
+        roomCollection.updateRoom(room);
+      }
+    });
 
-        var formData = {
-          messageId: shortid.generate(),
-          datePosted: Date.now(),
-          roomId: data.room,
-          userId: data.author,
-          message: data.message
-        };
-
-        try {
-          request.post({
-            headers: {
-              'content-type': 'application/json'
-            },
-            url: `${ENDPOINT}/messages`,
-            body: JSON.stringify(formData)
-          }, (err, httpResponse, body) => {
-            if (err) {
-              return console.error('upload failed:', err);
-            }
-            console.log('Server responded with:', body);
-          });
-        } catch (err) {
-          console.error('Couldn\'t upload m8: ' + err);
-        }
-        break;
-
-      default:
-        break;
-    }
   });
+} 
 
-  ws.on('close', (event) => {
-
-    console.log(`Removing: ${_user.name}\n`);
-
-    const room = roomCollection.getRoom(_room.id); // TODO: Get this from client? Is it included in this message?
-
-    if (room) {
-      if (room.users.removeUser(_user.id)) console.log("User removed")
-      broadcast(room, {
-        type: 'USERS_LIST',
-        users: room.getUserList()
-      }, ws);
-      roomCollection.updateRoom(room);
-    }
+roomCollection.fetchRooms(ENDPOINT)
+  .then((data) => {
+    console.log("Fetching Rooms from DB...");
+    console.log(data);
+    setupSocketServer();
+  })
+  .catch((err) => {
+    console.error(`Unable to fetchRooms: ${err}`);
   });
-
-});
 
 module.exports = app;
