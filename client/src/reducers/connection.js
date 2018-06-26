@@ -4,7 +4,6 @@ import setupSocket from '../sockets'
 const connection = (state = [], action) => {
     switch (action.type) {
         case types.CONNECT_SOCKET:
-            console.log('Connecting to Socket!')
             const socket = setupSocket(action.dispatch, action.name, action.room)
             const user = action.name;
             return state.concat({

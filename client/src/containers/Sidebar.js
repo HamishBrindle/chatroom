@@ -1,6 +1,11 @@
 import { connect } from 'react-redux'
 import SidebarComponent from '../components/Sidebar'
 
-export const Sidebar = connect(state => ({
-  users: state.users
-}), {})(SidebarComponent)
+const mapStateToProps = (state) => {
+    console.log(state);
+    return {
+        users: state.users
+    }
+}
+
+export const Sidebar = connect(mapStateToProps)(SidebarComponent)

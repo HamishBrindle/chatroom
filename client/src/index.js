@@ -9,8 +9,6 @@ import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import reducers from './reducers'
 import handleNewMessage from './sagas'
-import setupSocket from './sockets'
-import username from './utils/name'
 
 const sagaMiddleware = createSagaMiddleware()
 

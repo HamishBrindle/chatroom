@@ -8,10 +8,6 @@ import username from '../utils/name'
 
 class Room extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     componentWillMount() {
         this.props.connectSocket(username, this.props.room); // This is where I call to action my socket connection
     }

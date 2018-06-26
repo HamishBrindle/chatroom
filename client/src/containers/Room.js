@@ -2,9 +2,6 @@ import { connect } from 'react-redux'
 import RoomComponent from '../components/Room'
 import { connectSocket } from '../actions'
 
-import setupSocket from '../sockets'
-import username from '../utils/name'
-
 const mapStateToProps = (state = [], props) => {
   return {
     room: props.match.params.id // Current route

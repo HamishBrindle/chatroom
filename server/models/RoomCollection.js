@@ -4,7 +4,7 @@ const Room = require('./Room');
  * Building a server-side Map wrapper for keeping track of active users 
  * and open chat-rooms.
  */
-class RoomCollection {
+class RoomCollection { 
 
     constructor() {
         this.rooms = new Map();

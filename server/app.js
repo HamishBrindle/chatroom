@@ -13,6 +13,7 @@ const WebSocket = require('ws')
 const wss = new WebSocket.Server({ port: 8989 });
 
 const RoomCollection = require('./models/RoomCollection');
+const User = require('./models/User');
 
 const ENDPOINT = 'https://y6bzexjalj.execute-api.us-east-1.amazonaws.com/dev';
 
@@ -34,51 +35,46 @@ const roomCollection = new RoomCollection();
 roomCollection.fetchRooms(ENDPOINT);
 
 // this sends shit to everyone, but 'ws' only sends to client
-const broadcast = (data, ws) => {
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN && client !== ws) {
-      client.send(JSON.stringify(data))
+const broadcast = (room, data, ws) => {
+  const clients = Array.from(room.users.getUsers().values());
+  clients.forEach((client) => {
+    const connection = client.connection
+    if (connection.readyState === WebSocket.OPEN && connection !== ws) {
+      connection.send(JSON.stringify(data))
     }
   })
 }
 
 wss.on('connection', (ws) => {
 
-  let _index;
   let _user;
-  let _room; 
+  let _room;
 
   ws.on('message', (message) => {
 
     const data = JSON.parse(message);
-
-    // Also checks if room exists, if it does returns that room object.
     
     _room = roomCollection.addRoom(data.room);
-
+ 
     switch (data.type) {
       case 'ADD_USER':
         {
-          _user = data.name;
+          _user = new User(data.name, ws);
 
-          _room.users.push({
-            name: _user,
-            id: shortid.generate()
-          });
+          _room.users.addUser(_user);
 
-          _index = _room.users.indexOf(_user);          
+          console.log('----------------------------USER LIST');
+          console.log(_room.getUserList());
 
-          ws.send(JSON.stringify({
+          ws.send(JSON.stringify({ // THIS GOES TO OUR CLIENT
             type: 'USERS_LIST',
-            users: _room.users
+            users: _room.getUserList() // TODO: Change this on client side, it's now an array of objects, not strings
           }));
 
-          broadcast({
+          broadcast(_room, { // THIS GOES TO EVERYONE ELSE
             type: 'USERS_LIST',
-            users: _room.users
+            users: _room.getUserList() // TODO: Change this on client side, it's now an array of objects, not strings
           }, ws);
-
-          console.log(_room)
           
           // For the client that just connected (this client), send the chat history from the room.
           rp(`${ENDPOINT}/messages/room/${_room.id}`)
@@ -100,7 +96,7 @@ wss.on('connection', (ws) => {
 
       case 'ADD_MESSAGE':
 
-        broadcast({
+        broadcast(_room, {
           type: 'ADD_MESSAGE',
           message: data.message,
           room: data.room,
@@ -140,23 +136,18 @@ wss.on('connection', (ws) => {
 
   ws.on('close', (event) => {
 
-    console.log(`Removing: ${_user}\n`);
+    console.log(`Removing: ${_user.name}\n`);
 
     const room = roomCollection.getRoom(_room.id); // TODO: Get this from client? Is it included in this message?
 
     if (room) {
-
-      room.users.splice(_index, 1);
-
-      broadcast({
+      if (room.users.removeUser(_user.id)) console.log("User removed")
+      broadcast(room, {
         type: 'USERS_LIST',
-        users: room.users
+        users: room.getUserList()
       }, ws);
-  
       roomCollection.updateRoom(room);
-
     }
-
   });
 
 });
