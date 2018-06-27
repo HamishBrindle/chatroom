@@ -139,6 +139,16 @@ functions:
           method: GET
           path: /rooms
           private: false
+          cors:
+            origins:
+                - 'http://localhost:3000'
+            headers:
+                - Content-Type
+                - X-Amz-Date
+                - Authorization
+                - X-Api-Key
+                - X-Amz-Security-Token
+            allowCredentials: false  
 
 resources:
   Resources:

@@ -30,6 +30,11 @@ export const populateUsersList = users => ({
   users
 })
 
+export const populateRoomsList = rooms => ({
+  type: types.ROOMS_LIST,
+  rooms
+})
+
 export const refreshRoom = messages => ({
   type: types.ROOM_MESSAGES,
   messages

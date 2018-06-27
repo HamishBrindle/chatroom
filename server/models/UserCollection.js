@@ -19,7 +19,8 @@ class UserCollection {
         var user = this.users.get(u.id);
 
         if (user === undefined) {
-            user = new User(u.name ,u.connection);
+            console.log("Couldn't find user. Adding new....")
+            user = new User(u.name ,u.connection, u.id);
             this.users.set(user.id, user);
             return user;
         }

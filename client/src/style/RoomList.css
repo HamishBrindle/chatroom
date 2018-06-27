@@ -1,0 +1,58 @@
+li {
+    list-style: none;
+}
+
+.list-subheader {
+    color: #888;
+    font-style: italic;
+    letter-spacing: 0.2px;
+}
+
+.room {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    background: none;
+    transition: background 0.3s;    
+    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "ic . . . . ."
+        "ic title title title title info"
+        "ic . . . . .";
+    padding: 1em 1.5em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.room:hover {
+    background: #e3e3e3;
+    transition: background 0.3s;
+}
+
+.room-icon {
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
+    grid-area: ic;
+}
+
+.room-title {
+    font-size: 1em;
+    grid-area: title;
+    padding-left: 1em;
+    align-self: center;
+    font-weight: 700;
+}
+
+.room-info {
+    margin: 0;
+    font-style: italic;
+    color: #888;
+    grid-area: info;
+    align-self: center;    
+}
+
+.msger {
+    margin:0;
+}

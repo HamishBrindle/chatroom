@@ -10,7 +10,7 @@ const ENDPOINT = 'https://y6bzexjalj.execute-api.us-east-1.amazonaws.com/dev';
  * Building a server-side Map wrapper for keeping track of active users 
  * and open chat-rooms.
  */
-class RoomCollection { 
+class RoomCollection {
 
     constructor() {
         this.rooms = new Map();
@@ -31,7 +31,7 @@ class RoomCollection {
             this.addRoomToDB(room);
             return room;
         }
-        
+
         return room;
     }
 
@@ -58,7 +58,7 @@ class RoomCollection {
      */
     updateRoom(room) {
 
-        if (this.rooms.get(room.id) === undefined) { 
+        if (this.rooms.get(room.id) === undefined) {
 
             console.log(`Unable to find ${room.name} in RoomCollection.`);
 
@@ -72,23 +72,35 @@ class RoomCollection {
      * Fetch all the rooms from the Database and populate our RoomCollection.
      * @param {string} url 
      */
-    fetchRooms() { 
+    fetchRooms() {
 
         return new Promise((resolve, reject) => {
+
             console.log(`Fetching rooms from ${ENDPOINT}/rooms/`);
+
+            const roomsFetched = []; // FOR LOGGING ONLY
+
             rp(`${ENDPOINT}/rooms/`)
-            .then((data) => {
-                const rooms = JSON.parse(data);
-                rooms.forEach(r => {
-                    console.log(r);
-                    this.addRoom(r.roomId)
+                .then((data) => {
+
+                    const rooms = JSON.parse(data);
+
+                    rooms.forEach(r => {
+                        roomsFetched.push(r.roomId);
+                        this.addRoom(r.roomId);
+                    });
+
+                    console.log(`+ Fetched ${roomsFetched.length} rooms from DB: `, roomsFetched);
+
+                    resolve(data);
+
+                })
+                .catch((err) => {
+
+                    console.log(`Unable to retrieve rooms: ${err}`);
+                    reject(err);
+
                 });
-                resolve(data);
-            })
-            .catch((err) => {
-                console.log(`Unable to retrieve rooms: ${err}`);
-                reject(err);
-            });
         });
     }
 
@@ -99,29 +111,26 @@ class RoomCollection {
      */
     addRoomToDB(r) {
 
-        console.log("addRoomToDB");
-        console.log(r);
-
         var formData = {
             roomId: r.id,
-          };
+        };
 
         try {
             request.post({
-              headers: {
-                'content-type': 'application/json'
-              },
-              url: `${ENDPOINT}/rooms`,
-              body: JSON.stringify(formData)
+                headers: {
+                    'content-type': 'application/json'
+                },
+                url: `${ENDPOINT}/rooms`,
+                body: JSON.stringify(formData)
             }, (err, httpResponse, body) => {
-              if (err) {
-                return console.error('upload failed:', err);
-              }
-              console.log('Server responded with:', body);
+                if (err) {
+                    return console.error('upload failed:', err);
+                }
+                console.log('Server responded with:', body);
             });
-          } catch (err) {
+        } catch (err) {
             console.error('Couldn\'t upload room: ' + err);
-          }
+        }
 
     }
 

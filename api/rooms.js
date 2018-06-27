@@ -84,6 +84,9 @@ module.exports.getChatRooms = async (event, context) => {
         console.log(`getChatRooms data=${JSON.stringify(data.Items)}`);
         return {
             statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "http://localhost:3000"
+            },
             body: JSON.stringify(data.Items)
         };
     } catch (error) {

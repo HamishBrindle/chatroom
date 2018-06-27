@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { Switch, Route } from 'react-router-dom'
 
 import Home from './Home';
-import { Chat } from '../containers/Chat';
+import Chat from './Chat';
 
 class Main extends Component {
 
