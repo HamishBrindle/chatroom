@@ -9,7 +9,6 @@ class RoomList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.populateRoomsList = this.populateRoomsList.bind(this);
         this.roomSelect = this.roomSelect.bind(this);
         this.endpoint = 'https://y6bzexjalj.execute-api.us-east-1.amazonaws.com/dev/rooms'; // PUT THIS ENV
     }
@@ -17,6 +16,10 @@ class RoomList extends React.Component {
     componentDidMount() {
         console.log("Populating Room List")
         this.populateRoomsList();
+    }
+
+    componentWillUnmount() {
+        console.log('Unmounting RoomList component')
     }
 
     populateRoomsList() {

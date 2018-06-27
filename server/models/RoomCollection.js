@@ -2,17 +2,14 @@ const Room = require('./Room');
 const request = require('request');
 const rp = require('request-promise');
 
-const shortid = require('shortid'); // TODO: Why is this here? lets move to
-
-const ENDPOINT = 'https://y6bzexjalj.execute-api.us-east-1.amazonaws.com/dev';
-
 /**
  * Building a server-side Map wrapper for keeping track of active users 
  * and open chat-rooms.
  */
 class RoomCollection {
 
-    constructor() {
+    constructor(url) {
+        this.apiEndpoint = url;
         this.rooms = new Map();
     }
 
@@ -76,18 +73,19 @@ class RoomCollection {
 
         return new Promise((resolve, reject) => {
 
-            console.log(`Fetching rooms from ${ENDPOINT}/rooms/`);
+            console.log(`Fetching rooms from ${this.apiEndpoint}/rooms/`);
 
-            const roomsFetched = []; // FOR LOGGING ONLY
+            // This is for logging only
+            const roomsFetched = []; 
 
-            rp(`${ENDPOINT}/rooms/`)
+            rp(`${this.apiEndpoint}/rooms/`)
                 .then((data) => {
 
                     const rooms = JSON.parse(data);
 
                     rooms.forEach(r => {
-                        roomsFetched.push(r.roomId);
                         this.addRoom(r.roomId);
+                        roomsFetched.push(r.roomId);
                     });
 
                     console.log(`+ Fetched ${roomsFetched.length} rooms from DB: `, roomsFetched);
@@ -120,13 +118,17 @@ class RoomCollection {
                 headers: {
                     'content-type': 'application/json'
                 },
-                url: `${ENDPOINT}/rooms`,
+                url: `${this.apiEndpoint}/rooms`,
                 body: JSON.stringify(formData)
             }, (err, httpResponse, body) => {
-                if (err) {
-                    return console.error('upload failed:', err);
+
+                // If we get 'Internal server error', the room probably
+                // already exists. This is bad, I know... but it's annoying.
+                // TODO: Customize an API/DynamoDB response that we can catch!
+                if (!body.includes('Internal server error')) {
+                    console.log('Server responded with:', body);
                 }
-                console.log('Server responded with:', body);
+
             });
         } catch (err) {
             console.error('Couldn\'t upload room: ' + err);
