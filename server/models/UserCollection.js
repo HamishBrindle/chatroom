@@ -13,13 +13,18 @@ class UserCollection {
     /**
      * Creates a new User and returns it - but if it already exists, gets and returns
      * that user. Seems foolproof right now.
-     * @param {string} id 
+     * 
+     * @param {User} u the user we'd like to add
      */
     addUser(u) {
+
+        // Before adding, look for this user
         var user = this.users.get(u.id);
 
         if (user === undefined) {
-            console.log("Couldn't find user. Adding new....")
+
+            console.log("UserCollection: addUser: Couldn't find user. Adding new....")
+
             user = new User(u.name ,u.connection, u.id);
             this.users.set(user.id, user);
             return user;
@@ -57,7 +62,7 @@ class UserCollection {
      * @param {string} url 
      */
     fetchUsers(url) {
-        console.log(`Fetching users from ${url}`)
+        console.log(`UserCollection: fetchUsers: Fetching users from ${url}`)
     }
 
 }
