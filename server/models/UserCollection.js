@@ -6,7 +6,13 @@ const User = require('./User');
  */
 class UserCollection {
 
-    constructor() {
+    /**
+     * Constructor.
+     * 
+     * @param {String} room name of room this collection belongs to
+     */
+    constructor(room) {
+        this.room = room;
         this.users = new Map();
     }
 
@@ -23,7 +29,7 @@ class UserCollection {
 
         if (user === undefined) {
 
-            console.log("UserCollection: addUser: Couldn't find user. Adding new....")
+            console.log(`UserCollection: addUser: ➕  Adding user '${u.name}' to room '${this.room}'.`)
 
             user = new User(u.name ,u.connection, u.id);
             this.users.set(user.id, user);
@@ -62,7 +68,7 @@ class UserCollection {
      * @param {string} url 
      */
     fetchUsers(url) {
-        console.log(`UserCollection: fetchUsers: Fetching users from ${url}`)
+        console.log(`UserCollection: fetchUsers: 🐕  Fetching users from ${url}`)
     }
 
 }

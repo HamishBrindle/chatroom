@@ -9,7 +9,7 @@ const rp = require('request-promise');
 const shortid = require('shortid');
 const RoomCollection = require('./models/RoomCollection');
 const User = require('./models/User');
-const WebSocket = require('ws')
+const WebSocket = require('ws');
 
 require('dotenv').config();
 
@@ -48,7 +48,7 @@ roomCollection.fetchRooms(ENDPOINT)
         setupSocketServer();
     })
     .catch((err) => {
-        console.error(`Unable to fetchRooms: ${err}`);
+        console.error(`app: ❌ Unable to fetchRooms: ${err}`);
     });
 
 /**
@@ -94,7 +94,7 @@ const broadcast = (room, data, ws) => {
  */
 const setupSocketServer = () => {
 
-    console.log('+ Setting up Socket server. Set to send sick stuff (Mmm, alliteration)');
+    console.log('app: setupSocketServer: 🔥  Setting up Socket server');
 
     // When a user first connects to the server
     wss.on('connection', (ws) => {
@@ -185,11 +185,11 @@ const addMessage = (data, room, ws) => {
             // most likely it's already in the database. I should
             // handle this on the AWS more efficiently.
             if (!body.includes('Internal server error')) {
-                console.log('Server responded with:', body);
+                console.log('app: addMessage: ✔️  Server responded with:', body);
             }
         });
     } catch (err) {
-        console.error('Couldn\'t upload message: ' + err);
+        console.error('app: addMessage: ❌  Couldn\'t upload message: ' + err);
     }
 }
 
@@ -247,7 +247,7 @@ const addUser = (data, room, ws) => {
             }))
         })
         .catch((err) => {
-            console.log(`Unable to retrieve messages from \'${room.id}\': ${err}`);
+            console.log(`app: addUser: ❌  Unable to retrieve messages from \'${room.id}\': ${err}`);
         });
 
     // Now that we have a new user in our room, this room
@@ -265,7 +265,7 @@ const addUser = (data, room, ws) => {
  */
 const removeUser = (user, room, ws) => {
 
-    console.log(`Removing: ${user.name} from ${room.id}`);
+    console.log(`app: removeUser: ➖  Removing user '${user.name}' from room '${room.id}'`);
 
     // Get the room the user just left
     const currentRoom = roomCollection.getRoom(room.id); // TODO: Get this from client? Is it included in this message?
@@ -274,9 +274,9 @@ const removeUser = (user, room, ws) => {
 
         // Remove the user from the room, report
         if (currentRoom.users.removeUser(user.id)) { 
-            console.log(`+ User ${user.name} removed`);
+            console.log(`app: removeUser: ✔️  '${user.name}' removed from room '${room.id}'`);
         } else {
-            console.log(`- Couldn\'t remove user ${user.name}`);
+            console.error(`app: removeUser: ❌  Couldn\'t remove user ${user.name}`);
         }
 
         // User has been removed, clients need updated user-list for their rooms
@@ -285,7 +285,7 @@ const removeUser = (user, room, ws) => {
             users: currentRoom.getUserList()
         }, ws);
 
-        roomCollection.updateRoom(currentRoom);
+        roomCollection.updateRoom(currentRoom) 
     }
 }
 

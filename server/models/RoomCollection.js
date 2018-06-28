@@ -31,7 +31,6 @@ class RoomCollection {
 
             // Printing out response
             const res = this.addRoomToDB(room);
-            console.log(`RoomCollection: addRoom: ${res}`)
 
             return room;
 
@@ -65,14 +64,14 @@ class RoomCollection {
                 // already exists. This is bad, I know... but it's annoying.
                 // TODO: Customize an API/DynamoDB response that we can catch!
                 if (!body.includes('Internal server error')) {
-                    console.log('RoomCollection: addRoomToDB: Server responded with:', body);
+                    console.log('RoomCollection: addRoomToDB: ✔️  Server responded with:', body);
                 } else {
                     return body;
                 }
 
             });
         } catch (err) {
-            console.error('RoomCollection: addRoomToDB: Couldn\'t upload room: ' + err);
+            console.error('RoomCollection: addRoomToDB: ❌  Couldn\'t upload room: ' + err);
         }
 
     }
@@ -108,7 +107,7 @@ class RoomCollection {
 
         if (this.rooms.get(room.id) === undefined) {
 
-            console.log(`RoomCollection: updateRoom: Unable to find ${room.name}.`);
+            console.log(`RoomCollection: updateRoom: ❌  Unable to find ${room.name}.`);
 
             return false;
         }
@@ -125,7 +124,7 @@ class RoomCollection {
 
         return new Promise((resolve, reject) => {
 
-            console.log(`RoomCollection: fetchRooms: Fetching rooms from ${this.apiEndpoint}/rooms/`);
+            console.log(`RoomCollection: fetchRooms: 🐕  Fetching rooms from ${this.apiEndpoint}/rooms/`);
 
             // This is for logging only
             const roomsFetched = [];
@@ -140,14 +139,14 @@ class RoomCollection {
                         roomsFetched.push(r.roomId);
                     });
 
-                    console.log(`RoomCollection: fetchRooms: Fetched ${roomsFetched.length} rooms from DB: `, roomsFetched);
+                    console.log(`RoomCollection: fetchRooms: 🗞️  Fetched ${roomsFetched.length} rooms from DB: `, roomsFetched);
 
                     resolve(data);
 
                 })
                 .catch((err) => {
 
-                    console.log(`RoomCollection: fetchRooms: Unable to retrieve rooms: ${err}`);
+                    console.log(`RoomCollection: fetchRooms: ❌  Unable to retrieve rooms: ${err}`);
                     reject(err);
 
                 });

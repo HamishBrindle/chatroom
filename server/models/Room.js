@@ -6,9 +6,14 @@ const UserCollection = require('./UserCollection');
  */
 class Room {
 
+    /**
+     * Constructor.
+     * 
+     * @param {String} id name of the room
+     */
     constructor(id) {
         this.id = id;
-        this.users = new UserCollection();
+        this.users = new UserCollection(id);
     }
 
     /**
@@ -19,7 +24,9 @@ class Room {
     getUserList() {
         var userList = []
         var userArray = Array.from(this.users.getUsers().values());
-        console.log(`Room: getUserList: Getting ${userArray.length} users from '${this.id}'`);
+
+        // console.log(`Room: getUserList: Getting ${userArray.length} users from '${this.id}'`);
+
         userArray.forEach(user => {
             userList.push({
                 name: user.name,
