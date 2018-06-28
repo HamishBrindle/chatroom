@@ -8,8 +8,8 @@ const Chat = (props) => (
     <div id="container">
         <h1 className="app-header">Yummy Chat</h1>
         <Switch>
-            <Route exact path='/room' component={RoomList}/>
-            <Route path='/room/:id' component={Room}/>
+            <Route exact path='/rooms' component={RoomList}/>
+            <Route exact path='/rooms/:id' component={Room}/>
         </Switch>
     </div>
 )
