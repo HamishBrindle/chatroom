@@ -14,7 +14,6 @@ class RoomListItem extends React.Component {
                     <div className="room-title">
                         {this.props.room}
                     </div>
-                    <p className="room-info">(Active Users)</p>
                 </div>
                 <hr className="list-divider"/>
             </li>

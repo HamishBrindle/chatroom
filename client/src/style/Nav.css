@@ -1,0 +1,61 @@
+:root {
+  --jumbotron-padding-y: 3rem;
+}
+
+.jumbotron {
+  padding-top: var(--jumbotron-padding-y);
+  padding-bottom: var(--jumbotron-padding-y);
+  margin-bottom: 0;
+  background-color: #fff;
+}
+
+@media (min-width: 768px) {
+  .jumbotron {
+    padding-top: calc(var(--jumbotron-padding-y) * 2);
+    padding-bottom: calc(var(--jumbotron-padding-y) * 2);
+  }
+}
+
+.jumbotron p:last-child {
+  margin-bottom: 0;
+}
+
+.jumbotron-heading {
+  font-weight: 300;
+}
+
+.jumbotron .container {
+  max-width: 40rem;
+}
+
+footer {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+footer p {
+  margin-bottom: .25rem;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+.navbar-brand > strong {
+  font-family: 'OrangeJuice';
+  color: white;
+}
+
+.bg-green {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#c9de96+0,8ab66b+44,398235+100;Green+3D+%233 */
+  background: #c9de96;
+  /* Old browsers */
+  background: -moz-linear-gradient(left, #c9de96 0%, #8ab66b 44%, #398235 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #c9de96 0%, #8ab66b 44%, #398235 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #c9de96 0%, #8ab66b 44%, #398235 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c9de96', endColorstr='#398235', GradientType=1);
+  /* IE6-9 */
+}

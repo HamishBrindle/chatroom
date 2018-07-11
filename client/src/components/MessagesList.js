@@ -15,6 +15,7 @@ class MessagesList extends React.Component {
               <Message
               key={message.id}
               {...message}
+              userName={this.props.userName}
               />
             ))}
 

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import SidebarComponent from '../components/Sidebar'
+import UserListComponent from '../components/UserList'
 
 const mapStateToProps = (state) => {
     return {
@@ -7,4 +7,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export const Sidebar = connect(mapStateToProps)(SidebarComponent)
+export const UserList = connect(mapStateToProps)(UserListComponent)

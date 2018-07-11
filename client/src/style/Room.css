@@ -1,0 +1,52 @@
+.user-list > header {
+    border-top: 2px solid #dad8d8;
+}
+
+.user-list > aside {
+    white-space: nowrap;
+}
+
+.online-users {
+    padding: 1em 0 0 10px;
+    max-width: 500px;
+    overflow-x: scroll;    
+}
+
+.online-users > li {
+    display: inline-block;
+    padding: 0 20px 0 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.online-users > li > p {
+    margin-bottom: 0.5rem;
+}
+
+.online-users > li > div {
+    margin: auto;
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
+}
+
+.btn-back {
+    margin: 1em 0 0;
+    width: 100%;
+}
+
+.chat-window {
+    width: 100%;
+    max-width: 900px;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.center > h2 {
+    margin-top: 2em;
+}

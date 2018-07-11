@@ -1,16 +1,21 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
-import { createStore, applyMiddleware, compose } from 'redux'
-import createSagaMiddleware from 'redux-saga'
-import './index.css'
-import App from './App'
-import registerServiceWorker from './registerServiceWorker'
-import reducers from './reducers'
-import handleNewMessage from './sagas'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+import './index.css';
+import App from './App';
+import registerServiceWorker from './registerServiceWorker';
+import reducers from './reducers';
+import handleNewMessage from './sagas';
 
-const sagaMiddleware = createSagaMiddleware()
+import Amplify from 'aws-amplify';
+import awsmobile from './aws-exports';
+
+Amplify.configure(awsmobile);
+
+const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
   reducers,
@@ -32,5 +37,6 @@ ReactDOM.render(
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')
-)
-registerServiceWorker()
+);
+
+registerServiceWorker();

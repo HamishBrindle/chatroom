@@ -18,7 +18,6 @@ export class FormEditor extends Component {
     }
 
     submitForm(event) {
-        console.log(this.state);
         this.props.onSubmit(this.state);
     }
 

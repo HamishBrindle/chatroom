@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import getColor from '../utils/color'
 
-const Sidebar = ({ users }) => (
+const UserList = ({ users }) => (
   <aside id="sidebar" className="sidebar">
     <ul className="online-users">
       {users.map(user => (
@@ -15,7 +15,7 @@ const Sidebar = ({ users }) => (
   </aside>
 )
 
-Sidebar.propTypes = {
+UserList.propTypes = {
   users: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -24,4 +24,4 @@ Sidebar.propTypes = {
   ).isRequired
 }
 
-export default Sidebar
+export default UserList

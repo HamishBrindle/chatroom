@@ -1,0 +1,23 @@
+.amplify-nav-bar {
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 5px;
+    background: rgba(20, 109, 24, 0.37);
+    font-weight: 700;
+    color: #FFF;
+}
+
+.chat {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.note-to-users {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 1em;
+}

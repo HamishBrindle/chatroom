@@ -3,7 +3,7 @@ import * as types from '../constants/ActionTypes'
 const rooms = (state = [], action) => {
     switch (action.type) {
         case types.ROOMS_LIST:
-            return state.concat(parse(action.rooms));
+            return parse(action.rooms);
         default:
             return state
     }

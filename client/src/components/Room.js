@@ -1,21 +1,44 @@
 import React from "react"
 
-import { Sidebar } from "../containers/Sidebar"
+import { UserList } from "../containers/UserList"
 import { MessagesList } from "../containers/MessagesList"
 import { AddMessage } from "../containers/AddMessage"
 
-// import setupSocket from '../sockets'
-import username from '../utils/name'
+import '../style/Room.css';
+
+import { Auth } from 'aws-amplify';
 
 class Room extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            userName: '',
+            userLoaded: false
+        }
+    }
+
     componentWillMount() {
-        this.props.connectSocket(username, this.props.room); // This is where I call to action my socket connection
+        Auth.currentAuthenticatedUser()
+            .then(res => {
+                this.setState({ userName: res.username, userLoaded: true })
+            });
+    }
+
+    componentDidUpdate() {
+        if (this.state.userLoaded === true) {
+            this.props.connectSocket(this.state.userName, this.props.room);
+        }
+    }
+
+    goBack() {
+        this.props.history.goBack();   
     }
 
     render() {
         return (
-            <div>
+            <div className="chat-window">
                 <section className="msger">
                     <header className="msger-header">
                         <div className="msger-header-title">
@@ -43,9 +66,10 @@ class Room extends React.Component {
                                 </span>
                             </div>
                         </header>
-                        <Sidebar />
+                        <UserList />
                     </div>
                 </section>
+                <button className="btn btn-primary btn-lg btn-back" onClick={this.goBack.bind(this)}>Back To Roomlist</button>                
             </div>
         );
     }

@@ -45,7 +45,7 @@ class RoomList extends React.Component {
         // State
         this.state = {
             modalIsOpen: false,
-            fields: []
+            fields: [],
         };
         
         // Bindings
@@ -63,15 +63,16 @@ class RoomList extends React.Component {
      * @param {Object} form the state object from the FormEditor
      */
     submitFormModal(form) {
-        this.setState({ userName: form.userName, roomName: form.roomName });
-        console.log(this.state);
-        // this.props.history.push(`rooms/${room}`);        
+        
+        console.log("RoomList: submitFormModal: Submitting form:", form);
+        this.props.history.push(`rooms/${form.roomName}`);  
     }
 
     /**
      * Display modal and form for making a new room.
      */
     openModal(fields) {
+        console.log("RoomList: openModal: Opening modal.");
 
         this.setState({ 
             modalIsOpen: true, 
@@ -85,6 +86,7 @@ class RoomList extends React.Component {
      */
     afterOpenModal() {
         // TODO: references are now sync'd and can be accessed.
+        console.log("RoomList: afterOpenModal: Modal has been opened.");
         console.log(this.state);
     }
 
@@ -92,6 +94,9 @@ class RoomList extends React.Component {
      * Occurs when we close the modal.
      */
     closeModal() {
+        console.log("RoomList: closeModal: Closing modal.");
+        
+        this.setState({ selectedRoom: '', userName: '' });
         this.setState({ modalIsOpen: false });
     }
 
@@ -119,7 +124,9 @@ class RoomList extends React.Component {
      * @param {String} room name of the room selected
      */
     roomSelect(room) {
-        this.openModal([ 'userName' ]);
+        console.log("RoomList: roomSelect: Selecting a new room: ", room);
+        
+        this.props.history.push(`rooms/${room}`);
     }
 
     /**
@@ -128,7 +135,8 @@ class RoomList extends React.Component {
      * the form.
      */
     newRoom() {
-        this.openModal([ 'userName', 'roomName' ]);
+        console.log("RoomList: newRoom: Making a new room.");
+        this.openModal([ 'roomName' ]);
     }
 
     render() {
@@ -168,7 +176,7 @@ class RoomList extends React.Component {
                     <main className="msger-chat">
                         <ul className="list">
                             {this.props.rooms.map(room => (
-                                <RoomListItem key={room} onClick={this.roomSelect} room={room}/>
+                                <RoomListItem key={room} onClick={this.roomSelect} room={room} />
                             ))}
                         </ul>
                     </main>
