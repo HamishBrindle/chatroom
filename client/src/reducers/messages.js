@@ -1,5 +1,14 @@
 import * as types from '../constants/ActionTypes'
 
+/**
+ * messages contains all the messages for a room, but we need to
+ * delete the old ones when a user disconnects, so thats why we
+ * have a DISCONNECT_SOCKET action-type that just clears all the
+ * messages.
+ * 
+ * @param {Object[]} state 
+ * @param {Object} action 
+ */
 const messages = (state = [], action) => {
     switch (action.type) {
         case types.ADD_MESSAGE:
@@ -11,6 +20,10 @@ const messages = (state = [], action) => {
             }])
         case types.ROOM_MESSAGES:
             return state.concat(parseRoomMessages(action));
+        case types.DISCONNECT_SOCKET:
+            // Because we only store one room's messages at a time,
+            // we clear it out here by returning an empty array
+            return [];
         default:
             return state
     }

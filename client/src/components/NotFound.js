@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * NotFound is our 404 page.
+ */
 const NotFound = () => (
     <div className="container center">
         <h1 className="app-header">404</h1>

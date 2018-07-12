@@ -35,10 +35,22 @@ body {
 .app-header {
     font-weight: bold;
     text-align: center;
-    width: 100%;
+    min-width: 100%;
     font-family: 'OrangeJuice';
+    color: black;
+    transition: all 0.25s;
+    text-decoration: none;
+}
+
+.app-header:hover {
+    text-decoration: none;
+    color: deeppink;
+    transition: all 0.25s;
+}
+
+.app-header > h1 {
     font-size: 64px;
-    margin-bottom: 40px;
+    margin: 40px 0 40px;
 }
 
 .msger {
@@ -105,6 +117,8 @@ body {
     background-position: center;
     background-size: cover;
     border-radius: 50%;
+
+    min-width: 50px;
 }
 
 .msg-bubble {
@@ -191,19 +205,22 @@ body {
 .main-image>img {
     width: 100%;
     border-radius: 20px;
+    filter: grayscale(50%) blur(11px);
+    -webkit-filter: grayscale(50%) blur(11px);
 }
 
 .main-image>p {
     margin: 20px;
     position: absolute;
     color: white;
-    font-size: 180px;
+    font-size: 140px;
     line-height: 1em;
     font-family: 'OrangeJuice'
 }
 
 .btn-join {
     width: 100%;
+    margin: 1em 0 2em 0;
 }
 
 .color-overlay {
@@ -212,19 +229,14 @@ body {
     left: 0;
     height: 100%;
     width: 100%;
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#c9de96+0,8ab66b+44,398235+100;Green+3D+%233 */
-    background: #c9de96;
-    /* Old browsers */
-    background: -moz-linear-gradient(top, #c9de96 0%, #8ab66b 44%, #398235 100%);
-    /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, #c9de96 0%, #8ab66b 44%, #398235 100%);
-    /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, #c9de96 0%, #8ab66b 44%, #398235 100%);
-    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c9de96', endColorstr='#398235', GradientType=0);
-    /* IE6-9 */
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff5db1+0,02d108+100 */
+background: #ff5db1; /* Old browsers */
+background: -moz-linear-gradient(top, #ff5db1 0%, #02d108 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top, #ff5db1 0%,#02d108 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom, #ff5db1 0%,#02d108 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff5db1', endColorstr='#02d108',GradientType=0 ); /* IE6-9 */
     opacity: 0.5;
-    border-radius: 20px;
+    border-radius: 5px;
 }
 
 .landing-card {
@@ -237,7 +249,7 @@ body {
     box-shadow: 10px 10px 31px -17px rgba(18, 18, 18, 1);
 }
 
-.landing-card > h3 {
+.landing-card>h3 {
     text-align: center;
     margin-bottom: 1em;
 }
@@ -246,15 +258,42 @@ body {
     background: rgb(0, 180, 50) !important;
 }
 
-
 .social-card {
     display: flex;
     justify-content: center;
-    
 }
 
 .github {
     margin-top: 20px;
     max-width: 900px;
     width: 100%;
+}
+
+.btn-repo {
+    border: 2px solid #218838;
+    background: none;
+    color: #218838;
+    width: 100%;
+}
+
+.credentials {
+    display: flex;
+    margin: 32px 0 32px 0;
+    max-height: 4.5em;
+}
+
+.credentials>img {
+    flex: 1;
+    min-width: 50px;
+    margin: 0 10px 0 0;
+}
+
+.credentials>blockquote {
+    display: flex;
+    flex: 4;
+    flex-direction: column;
+}
+
+.credentials>blockquote>p {
+    font-size: 16px;
 }

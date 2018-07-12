@@ -46,3 +46,8 @@ export const connectSocket = (name, room, dispatch) => ({
   room,
   dispatch
 })
+
+export const disconnectSocket = room => ({
+  type: types.DISCONNECT_SOCKET,
+  room,
+})

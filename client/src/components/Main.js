@@ -1,17 +1,20 @@
 import React, { Component } from "react"
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Link } from 'react-router-dom'
 
 import Home from './Home';
 import Chat from './Chat';
 import NotFound from './NotFound';
 
+/**
+ * Main component
+ */
 class Main extends Component {
 
 	render() {
 
 		return (
 			<main>
-				<h1 className="app-header">Yummy Chat</h1>
+				<Link className="app-header" to="/"><h1>Yummy Chat</h1></Link>
 				<Switch>
 					<Route exact path='/' component={Home} />
 					<Route path='/rooms' component={Chat}/>

@@ -1,13 +1,15 @@
 import React from "react"
-
 import { UserList } from "../containers/UserList"
 import { MessagesList } from "../containers/MessagesList"
 import { AddMessage } from "../containers/AddMessage"
-
+import { Link } from 'react-router-dom'
 import '../style/Room.css';
-
 import { Auth } from 'aws-amplify';
 
+/**
+ * Room contains MessagesList, AddMessage, and the UserList. It also dispatches
+ * our Socket connection action (Sockets are only made inside individual rooms).
+ */
 class Room extends React.Component {
 
     constructor(props) {
@@ -17,6 +19,11 @@ class Room extends React.Component {
             userName: '',
             userLoaded: false
         }
+    }
+
+    componentWillUnmount() {
+        // console.log('Room: componentWillUnmount: Leaving room.');
+        this.props.disconnectSocket(this.props.room);
     }
 
     componentWillMount() {
@@ -29,9 +36,12 @@ class Room extends React.Component {
     componentDidUpdate() {
         if (this.state.userLoaded === true) {
             this.props.connectSocket(this.state.userName, this.props.room);
-        }
+        }     
     }
 
+    /**
+     * Routes user back a page.
+     */
     goBack() {
         this.props.history.goBack();   
     }
@@ -69,7 +79,7 @@ class Room extends React.Component {
                         <UserList />
                     </div>
                 </section>
-                <button className="btn btn-primary btn-lg btn-back" onClick={this.goBack.bind(this)}>Back To Roomlist</button>                
+                <Link to="/rooms"><button className="btn btn-success btn-lg btn-back">Back To Roomlist</button></Link>             
             </div>
         );
     }

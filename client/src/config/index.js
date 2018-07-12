@@ -2,4 +2,5 @@
  * Config constants...
  */
 
-export const WEBSOCKET_URL = 'ws://localhost:8989';
+// This is where we're connecting to our Sockets
+export const WEBSOCKET_URL = 'wss://yummy-chat-server.herokuapp.com';

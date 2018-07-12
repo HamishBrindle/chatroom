@@ -5,6 +5,13 @@ import Moment from 'moment'
 
 Moment.locale('en');
 
+/**
+ * Message from an author at a datePosted.
+ * 
+ * Note: This is where the author's colored avatar-circle is decided.
+ * 
+ * @param {Object} params 
+ */
 const Message = ({ message, author, datePosted }) => (
   
   <div className={"msg " + (author === 'Me' ? "right-msg" : "left-msg")}>

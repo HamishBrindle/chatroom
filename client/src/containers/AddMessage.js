@@ -4,7 +4,9 @@ import { addMessage } from '../actions'
 
 const mapStateToProps = (state = [], props) => {
   return {
-    socket: props.socket
+    // We need this because of how we handle new messages.
+    // Probably not the best way to go, kind of anti-pattern
+    socket: props.socket 
   }
 };
 

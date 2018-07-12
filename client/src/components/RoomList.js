@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from 'react-modal';
 import RoomListItem from './RoomListItem';
-import FormEditor from './NewRoom/FormEditor';
+import { FormEditor } from '../containers/FormEditor'
 import '../style/RoomList.css';
 import axios from 'axios';
 
@@ -23,6 +23,14 @@ const CUSTOM_STYLES = {
         transform: 'translate(-50%, -50%)',
         minWidth: '300px',
         color: '#000'
+    },
+    loading: {
+        margin: 'auto',
+        width: '100%',
+        marginTop: '50px',
+        textAlign: 'center',
+        fontSize: '48px',
+        color: '#e3e3e3'
     }
 };
 
@@ -46,6 +54,7 @@ class RoomList extends React.Component {
         this.state = {
             modalIsOpen: false,
             fields: [],
+            loading: true
         };
         
         // Bindings
@@ -64,7 +73,7 @@ class RoomList extends React.Component {
      */
     submitFormModal(form) {
         
-        console.log("RoomList: submitFormModal: Submitting form:", form);
+        // console.log("RoomList: submitFormModal: Submitting form:", form);
         this.props.history.push(`rooms/${form.roomName}`);  
     }
 
@@ -72,7 +81,7 @@ class RoomList extends React.Component {
      * Display modal and form for making a new room.
      */
     openModal(fields) {
-        console.log("RoomList: openModal: Opening modal.");
+        // console.log("RoomList: openModal: Opening modal.");
 
         this.setState({ 
             modalIsOpen: true, 
@@ -86,15 +95,14 @@ class RoomList extends React.Component {
      */
     afterOpenModal() {
         // TODO: references are now sync'd and can be accessed.
-        console.log("RoomList: afterOpenModal: Modal has been opened.");
-        console.log(this.state);
+        // console.log("RoomList: afterOpenModal: Modal has been opened.");
     }
 
     /**
      * Occurs when we close the modal.
      */
     closeModal() {
-        console.log("RoomList: closeModal: Closing modal.");
+        // console.log("RoomList: closeModal: Closing modal.");
         
         this.setState({ selectedRoom: '', userName: '' });
         this.setState({ modalIsOpen: false });
@@ -106,14 +114,16 @@ class RoomList extends React.Component {
      * TODO: Find somewhere better for this (ex. can we grab the list from our server?)
      */
     populateRoomsList() {
-        console.log(`RoomList: populateRoomsList: Fetching room list from ${ENDPOINT}`);
+        this.setState({ loading: true });
+        // console.log(`RoomList: populateRoomsList: Fetching room list from ${ENDPOINT}`);
         axios.get(ENDPOINT)
             .then(response => {
+                this.setState({ loading: false });
                 const data = response.data;
                 this.props.populateRoomsList(data);
             })
             .catch(err => {
-                console.log(`RoomList: populateRoomsList: There was a fucking error: ${err}`);
+                // console.log(`RoomList: populateRoomsList: There was a fucking error: ${err}`);
             });
     }
 
@@ -124,7 +134,7 @@ class RoomList extends React.Component {
      * @param {String} room name of the room selected
      */
     roomSelect(room) {
-        console.log("RoomList: roomSelect: Selecting a new room: ", room);
+        // console.log("RoomList: roomSelect: Selecting a new room: ", room);
         
         this.props.history.push(`rooms/${room}`);
     }
@@ -135,7 +145,7 @@ class RoomList extends React.Component {
      * the form.
      */
     newRoom() {
-        console.log("RoomList: newRoom: Making a new room.");
+        // console.log("RoomList: newRoom: Making a new room.");
         this.openModal([ 'roomName' ]);
     }
 
@@ -174,6 +184,7 @@ class RoomList extends React.Component {
                         </div>
                     </header>
                     <main className="msger-chat">
+                        {this.state.loading && <p style={CUSTOM_STYLES.loading}>Loading...</p>}
                         <ul className="list">
                             {this.props.rooms.map(room => (
                                 <RoomListItem key={room} onClick={this.roomSelect} room={room} />
@@ -189,12 +200,12 @@ class RoomList extends React.Component {
     }
 
     componentDidMount() {
-        console.log("RoomList: componentDidMount: Populating Room List")
+        // console.log("RoomList: componentDidMount: Populating Room List")
         this.populateRoomsList();
     }
 
     componentWillUnmount() {
-        console.log('RoomList: componentWillUnmount: Unmounting RoomList component')
+        // console.log('RoomList: componentWillUnmount: Unmounting RoomList component')
     }
 }
 

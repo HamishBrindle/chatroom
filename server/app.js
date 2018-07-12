@@ -1,10 +1,8 @@
-var createError = require('http-errors');
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var request = require('request');
-var app = express();
+'use strict'
 
+var express = require('express');
+var request = require('request');
+const path = require('path');
 const rp = require('request-promise');
 const shortid = require('shortid');
 const RoomCollection = require('./models/RoomCollection');
@@ -13,18 +11,15 @@ const WebSocket = require('ws');
 
 require('dotenv').config();
 
-const ENDPOINT = process.env.API_ENDPOINT;
+const ENDPOINT = process.env.API_ENDPOINT || 'https://y6bzexjalj.execute-api.us-east-1.amazonaws.com/dev';
+const PORT = process.env.PORT || 8990
+const INDEX = path.join(__dirname, 'index.html');
 
-const wss = new WebSocket.Server({
-    port: 8989
-});
+const server = express()
+  .use((req, res) => res.sendFile(INDEX) )
+  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({
-    extended: false
-}));
-app.use(cookieParser());
+const wss = new WebSocket.Server({ server });
 
 /*
  * Our global chatroom structure containing active rooms
@@ -135,7 +130,7 @@ const setupSocketServer = () => {
 
         // When a user disconnects from a Room
         ws.on('close', (event) => {
-
+            console.log('app: setupSocketServer: User has closed their connection. Must remove from room...');
             removeUser(_user, _room, ws);
 
         });
@@ -288,5 +283,3 @@ const removeUser = (user, room, ws) => {
         roomCollection.updateRoom(currentRoom) 
     }
 }
-
-module.exports = app;

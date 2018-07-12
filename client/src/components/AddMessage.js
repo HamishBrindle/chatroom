@@ -1,6 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+/**
+ * AddMessage is the input field at the bottom of the chat window for
+ * sending new messages.
+ * 
+ * @param {Object} props 
+ */
 const AddMessage = (props) => {
   let input;
 

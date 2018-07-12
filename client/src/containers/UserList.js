@@ -3,7 +3,7 @@ import UserListComponent from '../components/UserList'
 
 const mapStateToProps = (state) => {
     return {
-        users: state.users
+        users: state.users // All the users in the room
     }
 }
 
