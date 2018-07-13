@@ -66,7 +66,7 @@ typings/
 # Serverless directories
 .serverless
 
-# awsmobilejs
+awsmobilejs
 appsync-info.json
 aws-info.json
 project-info.json
