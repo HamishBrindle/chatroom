@@ -66,11 +66,11 @@ typings/
 # Serverless directories
 .serverless
 
-client/awsmobilejs/*
+~/client/awsmobilejs/
 client/appsync-info.json
 client/aws-info.json
 client/project-info.json
 aws-exports.js
 client/awsmobilejs/.awsmobile/backend-build
 client/awsmobilejs/\#current-backend-info
-client/~awsmobilejs-*/
+~client/~awsmobilejs-*/
