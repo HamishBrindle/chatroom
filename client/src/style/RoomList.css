@@ -79,9 +79,10 @@ li {
 .modal-header > h3 {
     padding: 0;
     margin: 0;
-    font-size: 1.25em;
+    font-size: 3.25em;
     color: #333;
     font-weight: 700;
+    font-family: 'OrangeJuice', 'Montserrat', sans-serif;
 }
 
 .modal-header > button {

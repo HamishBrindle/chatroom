@@ -20,18 +20,38 @@ const Chat = (props) => (
         </Switch>
 
         <div className="card note-to-users">
-            <div className="card-header">
-                Disclaimer
-            </div>
             <div className="card-body">
-                <h5 className="card-title">Hey! Please Note...</h5>
-                <p className="card-text">
-                This site is just an excercise in React/Redux, Node/WebSockets, and AWS/Serverless. 
-                It's really not meant for much more than demonstrating functionality.
+                <h5 className="card-title">Before You Start</h5>
+                <ul className="list-group">
+                    <li className="list-group-item">
+                        <p className="card-text">
+                            <span className="badge badge-warning">Important</span>&nbsp;
+                            <strong>
+                                If you don't see yourself in the userlist, just give it a few seconds, 
+                                it may be the free Heroku server warming up!
+                            </strong>
+                            <span role="img" aria-label="my-heart">🙏🙏🙏</span>
+                        </p>
+                    </li>
+                    <li className="list-group-item">
+                        <p className="card-text">
+                            <span className="badge badge-success">Note</span>&nbsp;
+                            This site is just an excercise in React/Redux, Node/WebSockets, and AWS/Serverless. 
+                            It's really not meant for much more than demonstrating functionality.
+                        </p>
+                    </li>
+                    
+                    <li className="list-group-item">
+                        <p className="card-text">
+                            <span className="badge badge-success">Note</span>&nbsp;
+                            It's also a lot more functional on bigger screens: the messaging 
+                            is hard to use on mobile.
+                            <span role="img" aria-label="my-heart">😅</span>                            
+                        </p>
+                    </li>
+                </ul>
                 <br/><br/>
-                It's also a lot more functional on bigger screens: the messaging is hard to use on mobile.
-                <br/><br/>
-                - Hamish <span role="img" aria-label="my-heart">❤️</span></p>
+                <p className="card-text">- Hamish <span role="img" aria-label="my-heart">❤️</span></p>
             </div>
         </div>
         

@@ -41,9 +41,29 @@ footer p {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
+.navbar-brand {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar-brand > img {
+  width: 32px;
+}
+
 .navbar-brand > strong {
-  font-family: 'OrangeJuice';
+  font-family: 'OrangeJuice', 'Nanum Gothic', sans-serif;
+  font-size: 32px;
   color: white;
+}
+
+.hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
+  background-color: #FFF !important;
+}
+
+a:focus, button:focus, input:focus, textarea:focus {
+  outline: none;
 }
 
 .bg-colored {
