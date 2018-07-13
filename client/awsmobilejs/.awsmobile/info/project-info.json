@@ -1,0 +1,19 @@
+{
+	"ProjectName": "client",
+	"ProjectPath": "C:\\Users\\hamis\\code\\chatroom\\client",
+	"InitializationTime": "2018-07-02-21-24-16",
+	"LastConfigurationTime": "2018-07-02-21-18-24",
+	"LastNPMInstallTime": "",
+	"FrontendLastBuildTime": "",
+	"LastPublishTime": "",
+	"BackendLastSyncTime": "2018-07-02-21-53-04",
+	"BackendLastBuildTime": "2018-07-02-21-52-57",
+	"BackendLastPushTime": "2018-07-02-21-52-59",
+	"BackendProjectID": "6a96cfd4-0287-4bed-9467-9a052a05895e",
+	"BackendProjectName": "YummyChat",
+	"BackendProjectConsoleUrl": "https://console.aws.amazon.com/mobilehub/home#/6a96cfd4-0287-4bed-9467-9a052a05895e/build",
+	"BackendProjectCreationTime": "2018-07-03T04:15:54.120Z",
+	"BackendProjectLastUpdatedTime": "2018-07-03T04:52:58.836Z",
+	"Framework": "react",
+	"BackendLastSyncToDevTime": "2018-07-02-21-53-04"
+}
